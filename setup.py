@@ -11,11 +11,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ozanmutlu/jenkins_setuptools_versioning",
     packages=setuptools.find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT",
-        "Operating System :: OS Independent",
-    ],
     python_requires='>=3.6',
     py_modules=["setuptools_git_versioning"],
     entry_points={
@@ -25,5 +20,5 @@ setuptools.setup(
     },
     include_package_data=True,
     zip_safe=False,
-    requires=["six>=1.13.0"]
+    install_requires=["six>=1.13.0"]
 )
