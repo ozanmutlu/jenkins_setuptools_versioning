@@ -1,10 +1,16 @@
 
 import setuptools
+import os
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(HERE, "requirements.txt")) as f:
+    requirements = f.read().split("\n")
 
 setuptools.setup(
     author="Ozan Mutlu",
     name="jenkins_setuptools_versioning",
-    version=1.7,
+    version=2.2,
     author_email="ozanmutluu@gmail.com",
     description="Use git repo data for building a version number according PEP-440",
     long_description="Handle versioning",
@@ -20,5 +26,5 @@ setuptools.setup(
     },
     include_package_data=True,
     zip_safe=False,
-    install_requires=["six>=1.13.0"]
+    install_requires=requirements
 )
