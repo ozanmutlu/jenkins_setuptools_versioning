@@ -49,7 +49,7 @@ def get_all_tags(sort_by="version:refname"):  # type: (str) -> List[str]
     return []
 
 
-def get_branch_tags(sort_by="creatordate"):  # type: (str) -> List[str]
+def get_branch_tags(sort_by="v:refname"):  # type: (str) -> List[str]
     tags = _exec("git tag --sort=-{} --merged".format(sort_by))
     if tags:
         return tags
@@ -74,12 +74,12 @@ def next_tag_version(current_tag):
     current_tag = current_tag.lstrip("v")
     current_tag_list = current_tag.split(".")
 
-    if "feature/" in current_branch or current_branch is "develop":
+    if "feature/" in current_branch or current_branch == "develop":
         minor_increased = int(current_tag_list[1]) + 1
-        return str("v.{}.{}.{}".format(current_tag_list[0], minor_increased, current_tag_list[2]))
+        return str("v{}.{}.{}".format(current_tag_list[0], minor_increased, current_tag_list[2]))
     else:
         patch_increased = int(current_tag_list[2]) + 1
-        return str("v.{}.{}.{}".format(current_tag_list[0], current_tag_list[1], patch_increased))
+        return str("v{}.{}.{}".format(current_tag_list[0], current_tag_list[1], patch_increased))
 
 
 def get_sha(name="HEAD"):  # type: (str) -> Optional[str]
@@ -189,9 +189,8 @@ def version_from_git(
     # type: (...) -> str
 
     from_file = False
-    #tag = get_tag(sort_by) if sort_by else get_tag()
-    tag = get_tag("v:refname")
-    tag = next_tag_version(tag)
+    tag = get_tag(sort_by) if sort_by else get_tag()
+    next_tag = next_tag_version(tag)
     if tag is None:
         if version_callback is not None:
             if callable(version_callback):
@@ -232,7 +231,7 @@ def version_from_git(
     t = subst_env_variables(t)
     t = subst_timestamp(t)
 
-    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    version = t.format(sha=full_sha[:8], tag=next_tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
