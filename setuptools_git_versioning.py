@@ -187,10 +187,17 @@ def version_from_git(
     sort_by=None,  # type: Optional[str]
 ):
     # type: (...) -> str
+    
+    # Check if PKG-INFO exists and return value in that if it does
+    if os.path.exists("PKG-INFO"):
+        with open("PKG-INFO") as f:
+            lines = f.readlines()
+        for line in lines:
+            if line.startswith("Version:"):
+                return line[8:].strip()
 
     from_file = False
     tag = get_tag(sort_by) if sort_by else get_tag()
-    next_tag = next_tag_version(tag)
     if tag is None:
         if version_callback is not None:
             if callable(version_callback):
@@ -231,7 +238,7 @@ def version_from_git(
     t = subst_env_variables(t)
     t = subst_timestamp(t)
 
-    version = t.format(sha=full_sha[:8], tag=next_tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
