@@ -10,7 +10,7 @@ with open(os.path.join(HERE, "requirements.txt")) as f:
 setuptools.setup(
     author="Ozan Mutlu",
     name="jenkins_setuptools_versioning",
-    version=2.2,
+    version=2.4,
     author_email="ozanmutluu@gmail.com",
     description="Use git repo data for building a version number according PEP-440",
     long_description="Handle versioning",
