@@ -4,7 +4,7 @@ import setuptools
 setuptools.setup(
     author="Ozan Mutlu",
     name="jenkins_setuptools_versioning",
-    version=1.3,
+    version=1.4,
     author_email="ozanmutluu@gmail.com",
     description="Use git repo data for building a version number according PEP-440",
     long_description="Handle versioning",

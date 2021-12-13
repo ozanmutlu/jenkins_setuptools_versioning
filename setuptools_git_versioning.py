@@ -57,7 +57,7 @@ def get_branch_tags(sort_by="creatordate"):  # type: (str) -> List[str]
 
 
 def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
-    tags = get_all_tags(*args, **kwargs)
+    tags = get_branch_tags(*args, **kwargs)
     if tags:
         return tags[0]
     return None
@@ -190,7 +190,7 @@ def version_from_git(
 
     from_file = False
     #tag = get_tag(sort_by) if sort_by else get_tag()
-    tag = get_latest_tag_on_branch()
+    tag = get_tag("v:refname")
     tag = next_tag_version(tag)
     if tag is None:
         if version_callback is not None:
