@@ -62,6 +62,25 @@ def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
         return tags[0]
     return None
 
+def get_latest_tag_on_branch():
+    latest_tag_on_branch = _exec("git describe --tags --abbrev=0")
+    if latest_tag_on_branch:
+        return latest_tag_on_branch[0]
+    return None
+
+
+def next_tag_version(current_tag):
+    current_branch = get_branch()
+    current_tag = current_tag.lstrip("v")
+    current_tag_list = current_tag.split(".")
+
+    if "feature/" in current_branch or current_branch is "develop":
+        minor_increased = int(current_tag_list[1]) + 1
+        return str("v.{}.{}.{}".format(current_tag_list[0], minor_increased, current_tag_list[2]))
+    else:
+        patch_increased = int(current_tag_list[2]) + 1
+        return str("v.{}.{}.{}".format(current_tag_list[0], current_tag_list[1], patch_increased))
+
 
 def get_sha(name="HEAD"):  # type: (str) -> Optional[str]
     sha = _exec('git rev-list -n 1 "{}"'.format(name))
@@ -170,7 +189,9 @@ def version_from_git(
     # type: (...) -> str
 
     from_file = False
-    tag = get_tag(sort_by) if sort_by else get_tag()
+    #tag = get_tag(sort_by) if sort_by else get_tag()
+    tag = get_latest_tag_on_branch()
+    tag = next_tag_version(tag)
     if tag is None:
         if version_callback is not None:
             if callable(version_callback):
