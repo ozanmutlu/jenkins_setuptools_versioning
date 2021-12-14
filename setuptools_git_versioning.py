@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from re import Pattern
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
-DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}+{sha}"  # type: str
-DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}+{sha}.dirty"  # type: str
+DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}_{sha}"  # type: str
+DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}_{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = "0.0.1"
 ENV_VARS_REGEXP = re.compile(r"\{env:([^:}]+):?([^}]+}?)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?([^:}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
@@ -217,6 +217,7 @@ def version_from_git(
             tag_sha = get_latest_file_commit(version_file)
     else:
         tag_sha = get_sha(tag)
+        next_tag = next_tag_version(tag)
 
     dirty = is_dirty()
     head_sha = get_sha()
@@ -238,7 +239,10 @@ def version_from_git(
     t = subst_env_variables(t)
     t = subst_timestamp(t)
 
-    version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    if t is template:
+        version = t.format(sha=full_sha[:8], tag=tag, ccount=ccount, branch=branch, full_sha=full_sha)
+    else:
+        version = t.format(sha=full_sha[:8], tag=next_tag, ccount=ccount, branch=branch, full_sha=full_sha)
 
     # Ensure local version label only contains permitted characters
     public, sep, local = version.partition("+")
