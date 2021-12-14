@@ -10,7 +10,6 @@ from distutils.errors import DistutilsSetupError
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Union
 
 from setuptools.dist import Distribution
-from six.moves import collections_abc
 
 if TYPE_CHECKING:
     from re import Pattern
@@ -50,7 +49,7 @@ def get_all_tags(sort_by="version:refname"):  # type: (str) -> List[str]
 
 
 def get_branch_tags(sort_by="v:refname"):  # type: (str) -> List[str]
-    tags = _exec("git tag --sort=-{} --merged".format(sort_by))
+    tags = _exec("git tag --sort=-{}".format(sort_by))
     if tags:
         return tags
     return []
@@ -65,11 +64,12 @@ def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
 def get_latest_tag_on_branch():
     latest_tag_on_branch = _exec("git describe --tags --abbrev=0")
     if latest_tag_on_branch:
-        return latest_tag_on_branch[0]
-    return None
+        return latest_tag_on_branch
+    return []
 
 
 def next_tag_version(current_tag):
+    print(f"current_tag::: {current_tag}")
     current_branch = get_branch()
     current_tag = current_tag.lstrip("v")
     current_tag_list = current_tag.split(".")
@@ -118,9 +118,6 @@ def parse_config(dist, _, value):  # type: (Distribution, Any, Any) -> None
             return
         else:
             raise DistutilsSetupError("Can't be False")
-
-    if not isinstance(value, collections_abc.Mapping):
-        raise DistutilsSetupError("Config in the wrong format")
 
     template = value.get("template", DEFAULT_TEMPLATE)
     dev_template = value.get("dev_template", DEFAULT_DEV_TEMPLATE)
