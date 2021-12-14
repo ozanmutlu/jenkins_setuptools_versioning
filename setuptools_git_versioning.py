@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from re import Pattern
 
 DEFAULT_TEMPLATE = "{tag}"  # type: str
-DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}-{sha}"  # type: str
-DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}-{sha}.dirty"  # type: str
+DEFAULT_DEV_TEMPLATE = "{tag}.dev{ccount}+{sha}"  # type: str
+DEFAULT_DIRTY_TEMPLATE = "{tag}.dev{ccount}+{sha}.dirty"  # type: str
 DEFAULT_STARTING_VERSION = "0.0.1"
 ENV_VARS_REGEXP = re.compile(r"\{env:([^:}]+):?([^}]+}?)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
 TIMESTAMP_REGEXP = re.compile(r"\{timestamp:?([^:}]+)?\}", re.IGNORECASE | re.UNICODE)  # type: Pattern
