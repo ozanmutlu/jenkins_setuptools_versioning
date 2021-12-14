@@ -56,7 +56,8 @@ def get_branch_tags(sort_by="v:refname"):  # type: (str) -> List[str]
 
 
 def get_tag(*args, **kwargs):  # type: (*str, **str) -> Optional[str]
-    tags = get_branch_tags(*args, **kwargs)
+    #tags = get_branch_tags(*args, **kwargs)
+    tags = get_latest_tag_on_branch()
     if tags:
         return tags[0]
     return None
@@ -69,14 +70,18 @@ def get_latest_tag_on_branch():
 
 
 def next_tag_version(current_tag):
-    print(f"current_tag::: {current_tag}")
     current_branch = get_branch()
     current_tag = current_tag.lstrip("v")
     current_tag_list = current_tag.split(".")
 
+    if len(current_tag_list) == 2:
+        current_tag_list.append("0")
+    elif len(current_tag_list) > 3 or len(current_tag_list) < 2:
+        raise Exception("Check the tags, example tag: v2.3.1")
+
     if "feature/" in current_branch or current_branch == "develop":
         minor_increased = int(current_tag_list[1]) + 1
-        return str("v{}.{}.{}".format(current_tag_list[0], minor_increased, current_tag_list[2]))
+        return str("v{}.{}.0".format(current_tag_list[0], minor_increased))
     else:
         patch_increased = int(current_tag_list[2]) + 1
         return str("v{}.{}.{}".format(current_tag_list[0], current_tag_list[1], patch_increased))
